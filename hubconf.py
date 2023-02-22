@@ -39,16 +39,12 @@ class NeuralNetwork(nn.Module):
         logits = self.linear_relu_stack(x)
         return logits
 
-#############################
-
 def get_lossfn_and_optimizer(mymodel):
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(mymodel.parameters(), lr=1e-3)
     return loss_fn, optimizer
 
-
 def load_data():
-
     # Download training data from open datasets.
     training_data = datasets.FashionMNIST(
         root="data",
@@ -56,7 +52,6 @@ def load_data():
         download=True,
         transform=ToTensor(),
     )
-
     # Download test data from open datasets.
     test_data = datasets.FashionMNIST(
         root="data",
@@ -64,43 +59,30 @@ def load_data():
         download=True,
         transform=ToTensor(),
     )
-    
     return training_data, test_data
 
-#############################
-
 def create_dataloaders(training_data, test_data, batch_size=64):
-
     # Create data loaders.
     train_dataloader = DataLoader(training_data, batch_size=batch_size)
     test_dataloader = DataLoader(test_data, batch_size=batch_size)
-
     for X, y in test_dataloader:
         print(f"Shape of X [N, C, H, W]: {X.shape}")
         print(f"Shape of y: {y.shape} {y.dtype}")
         break
-        
     return train_dataloader, test_dataloader
   
-#############################
-
-def get_model():
-    
+def get_model():  
     model = NeuralNetwork().to(device)
-
     return model
-
 
 def _train(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
     model.train()
     for batch, (X, y) in enumerate(dataloader):
         X, y = X.to(device), y.to(device)
-
         # Compute prediction error
         pred = model(X)
         loss = loss_fn(pred, y)
-
         # Backpropagation
         optimizer.zero_grad()
         loss.backward()
@@ -141,7 +123,6 @@ def load_model(mypath="model.pth"):
     model = NeuralNetwork()
     model.load_state_dict(torch.load("model.pth"))
     return model
-
 
 def sample_test(model1, test_data):
     model1.eval()
